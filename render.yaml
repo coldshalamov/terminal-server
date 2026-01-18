@@ -1,0 +1,23 @@
+# Render.com deployment configuration for Terminal Server
+# https://render.com/docs/blueprint-spec
+
+services:
+  # Main web service - handles WebSocket relay and serves frontend
+  - type: web
+    name: terminal-server
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    # dockerContext defaults to repo root
+    plan: starter  # $7/month - needed for persistent WebSocket connections
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: JWT_SECRET
+        generateValue: true  # Render generates a secure random value
+      - key: SHARED_SECRET
+        sync: false  # You must set this manually in dashboard
+      - key: CORS_ORIGIN
+        sync: false  # Set to your domain, e.g., https://terminal-server.onrender.com

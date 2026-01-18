@@ -1,0 +1,21 @@
+# Example docker-compose.yml for running terminal-connector
+# This is for reference only - modify values as needed
+
+version: '3.8'
+
+services:
+  terminal-connector:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: terminal-connector
+    restart: unless-stopped
+    environment:
+      - CONNECTOR_URL=https://your-app.onrender.com
+      - CONNECTOR_TOKEN=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+      - CONNECTOR_SHELL=/bin/bash
+    # Note: PTY requires TTY access, which may not work well in all container environments
+    # Consider using host mode or privileged mode for PTY support
+    # privileged: true
+    # tty: true
+    stdin_open: true

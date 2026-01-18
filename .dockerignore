@@ -1,0 +1,42 @@
+# Git
+.git
+.gitignore
+
+# Node modules (will be installed in container)
+node_modules
+*/node_modules
+
+# Build outputs (will be rebuilt in container)
+dist
+*/dist
+
+# Documentation
+*.md
+docs/
+
+# IDE
+.vscode
+.idea
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Test files
+test
+tests
+__tests__
+*.test.js
+*.test.ts
+*.spec.js
+*.spec.ts
+
+# Development
+.env
+.env.local
+.env.*.local
