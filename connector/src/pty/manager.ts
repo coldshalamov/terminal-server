@@ -52,6 +52,10 @@ export class PTYManager {
 
       // Handle PTY exit
       this.pty.onExit(({ exitCode, signal }) => {
+        // Check if PTY was already killed manually to avoid false crash reports
+        if (this.pty === null) {
+          return;
+        }
         this.events.onExit(exitCode ?? -1, signal ?? -1);
         this.pty = null;
       });

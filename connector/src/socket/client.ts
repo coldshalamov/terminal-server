@@ -55,6 +55,7 @@ export class SocketClient {
       transports: ['websocket'],
       reconnection: true,
       reconnectionDelay: this.config.reconnectInterval,
+      reconnectionDelayMax: 30000, // Cap backoff at 30 seconds
       reconnectionAttempts: this.config.maxReconnectAttempts,
     });
 

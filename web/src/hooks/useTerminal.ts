@@ -86,7 +86,7 @@ export const useTerminal = ({ onData, onResize }: UseTerminalProps): [React.RefO
       xtermRef.current = null;
       fitAddonRef.current = null;
     };
-  }, [onResize]);
+  }, []);
 
   // Handle terminal data input
   useEffect(() => {
@@ -97,10 +97,10 @@ export const useTerminal = ({ onData, onResize }: UseTerminalProps): [React.RefO
       onData(data);
     };
 
-    terminal.onData(handleData);
+    const disposable = terminal.onData(handleData);
 
     return () => {
-      terminal.onData(() => {});
+      disposable.dispose();
     };
   }, [onData]);
 

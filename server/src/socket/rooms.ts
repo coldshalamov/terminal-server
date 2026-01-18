@@ -9,9 +9,24 @@ export interface Session {
   terminalBuffer: Buffer[]; // Store recent output for reconnection
 }
 
-class RoomManager {
+export class RoomManager {
   private sessions: Map<string, Session> = new Map();
   private readonly BUFFER_SIZE = 100; // Keep last 100 chunks
+  private cleanupInterval: NodeJS.Timeout | null = null;
+
+  constructor() {
+    // Start cleanup interval - run every hour
+    this.cleanupInterval = setInterval(() => {
+      this.cleanupInactiveSessions(24 * 60 * 60 * 1000); // 24 hours
+    }, 60 * 60 * 1000); // Every hour
+  }
+
+  destroy() {
+    if (this.cleanupInterval) {
+      clearInterval(this.cleanupInterval);
+      this.cleanupInterval = null;
+    }
+  }
 
   createSession(sessionId: string): Session {
     const session: Session = {
@@ -86,6 +101,26 @@ class RoomManager {
 
   removeSession(sessionId: string) {
     this.sessions.delete(sessionId);
+  }
+
+  cleanupInactiveSessions(maxAge: number) {
+    const now = Date.now();
+    const toRemove: string[] = [];
+
+    for (const [sessionId, session] of this.sessions) {
+      if (now - session.lastActivity > maxAge) {
+        toRemove.push(sessionId);
+      }
+    }
+
+    toRemove.forEach(sessionId => {
+      this.sessions.delete(sessionId);
+      console.log(`[RoomManager] Cleaned up inactive session: ${sessionId}`);
+    });
+
+    if (toRemove.length > 0) {
+      console.log(`[RoomManager] Cleaned up ${toRemove.length} inactive sessions`);
+    }
   }
 }
 

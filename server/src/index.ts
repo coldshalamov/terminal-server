@@ -31,18 +31,16 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
-// Serve static frontend files in production
-if (config.nodeEnv === 'production') {
-  const staticPath = path.join(__dirname, '../../web/dist');
-  app.use(express.static(staticPath));
-  
-  // Serve index.html for all non-API routes (SPA support)
-  app.get('*', (req, res) => {
-    if (!req.path.startsWith('/api') && !req.path.startsWith('/socket.io')) {
-      res.sendFile(path.join(staticPath, 'index.html'));
-    }
-  });
-}
+// Serve static frontend files (in both development and production)
+const staticPath = path.join(__dirname, '../../web/dist');
+app.use(express.static(staticPath));
+
+// Serve index.html for all non-API routes (SPA support)
+app.get('*', (req, res) => {
+  if (!req.path.startsWith('/api') && !req.path.startsWith('/socket.io')) {
+    res.sendFile(path.join(staticPath, 'index.html'));
+  }
+});
 
 // Socket.io
 io.on('connection', (socket) => {
